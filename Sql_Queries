@@ -1,0 +1,114 @@
+-- Topic Data exploration
+
+-- Q Find total title
+select title
+from akash;
+
+-- Q Find content Types
+select type
+from akash;
+
+-- Q Range of content release year
+select min(release_year) as first_release_year,max(release_year) as last_release_year
+from akash;
+
+-- Topic Content Type and release year
+
+-- Q range of movie release year
+select min(release_year) as first_release_year,max(release_year) as last_release_year
+from akash
+where type = 'Movie';
+
+-- Q range of tv show release year
+select min(release_year) as first_release_year,max(release_year) as last_release_year
+from akash
+where type = 'TV Show';
+
+-- Topic Rating 
+
+-- Q Find rating distribution
+select type ,rating
+from akash;
+
+-- Q Most common uses rating
+select type ,max(rating)
+from akash
+group by type;
+
+-- Q Most least uses rating
+select type,min(rating)
+from akash
+group by type;
+
+
+-- Topic Country Analysis
+
+-- Q Find Types of content country wise
+select type,country
+from akash;
+
+-- Q Which country release maximum Content
+select type,max(country)
+from akash
+group by type;
+
+-- Q Which country release least content
+select type,min(country)
+from akash
+group by type;
+
+-- Q Which country release content recently
+select type,country,max(release_year)
+from akash
+group by type,country
+limit 3;
+
+-- Q Country Which did not release movie from long year of time
+select country,min(release_year)
+from akash
+group by country,release_year
+order by release_year desc
+limit 3;
+
+-- Topic Duration Analysis
+
+-- Q Find Average content length
+select type,avg(duration)
+from akash
+group by type;
+
+-- Q Find maximum length content
+select type,max(duration)
+from akash
+group by type;
+
+-- Q Find minimum length content
+select type,min(duration)
+from akash
+group by type;
+
+
+-- Q Range of content duration
+select type,min(duration) as least_duration ,max(duration) as max_duration
+from akash
+group by type;
+
+-- Topic Data Quality
+
+-- Q Find duplicates record
+select show_id,count(*)
+from akash
+group by show_id
+having count(*)>1;
+
+-- Q Delete duplicates record
+
+delete from akash
+where show_id not in(
+  select show_id
+  from(
+    select min(show_id) as show_id
+    from akash
+    group by show_id
+  ) as temp
+);
